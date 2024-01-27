@@ -1,0 +1,424 @@
+import {
+  Button,
+  Container,
+  Grid,
+  HStack,
+  Heading,
+  Image,
+  Input,
+  Select,
+  VStack,
+} from '@chakra-ui/react';
+import React, { useEffect, useState } from 'react';
+import Sidebar from '../Sidebar';
+import { useDispatch, useSelector } from 'react-redux';
+import { useNavigate, useParams } from 'react-router-dom';
+import MetaData from '../../MetaData';
+import { getProductDetails, updateProduct } from '../../../redux/actions/admin';
+import toast from 'react-hot-toast';
+import Loader from '../../Loader';
+
+export const fileUploadCss = {
+  cursor: 'pointer',
+  marginLeft: '-5%',
+  width: '110%',
+  border: 'none',
+  height: '100%',
+  color: '#ECC94B',
+  backgroundColor: 'white',
+};
+
+const UpdateProduct = () => {
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const params = useParams();
+  const { product } = useSelector(state => state.productt);
+  const { loading, error, message } = useSelector(state => state.update);
+
+  const [name, setProductName] = useState('');
+  const [description, setDescription] = useState('');
+  const [price, setPrice] = useState('');
+  const [stock, setStock] = useState('');
+  const [size, setSize] = useState('');
+  const [selectedImages, setSelectedImages] = useState([]);
+  const [imagePreviews, setImagePreviews] = useState([]);
+  const [categories] = useState(['Gear', 'Shoes', 'Helmets']);
+  const [subcategories, setSubcategories] = useState([]);
+  const [selectedCategory, setSelectedCategory] = useState('');
+  const [selectedSubcategory, setSelectedSubcategory] = useState('');
+  const [subSubcategories, setSubSubcategories] = useState([]);
+  const [selectedSubSubcategory, setSelectedSubSubcategory] = useState('');
+
+  const [showVerificationBox, setShowVerificationBox] = useState(false);
+
+  const changeImageHandler = e => {
+    const files = e.target.files;
+    const newSelectedImages = [...selectedImages];
+    const newImagePreviews = [...imagePreviews];
+
+    for (let i = 0; i < files.length; i++) {
+      const file = files[i];
+      const reader = new FileReader();
+
+      reader.onloadend = () => {
+        newImagePreviews.push(reader.result);
+        newSelectedImages.push(file);
+
+        // Display only the first 8 images
+        setImagePreviews(newImagePreviews.slice(0, 8));
+        setSelectedImages(newSelectedImages.slice(0, 8));
+      };
+
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const subcategoriesMap = {
+    Gear: [
+      'Bat',
+      'Batting Gear',
+      'WicketKeeping',
+      'Protection',
+      'Bags',
+      'Clothing',
+      'Cricket Sets',
+      'Accessories',
+    ],
+    Shoes: ['Bowling', 'Spikes', 'Rubber Studs', 'Accessories'],
+    Helmets: ['Titanium', 'Steel', 'Limited Edition', 'Accessories'],
+  };
+
+  const subSubcategoriesMap = {
+    Bat: ['English Willow', 'Kashmir Willow', 'Tennis', 'Player Edition'],
+    'Batting Gear': ['Gloves', 'Leg Guard', 'Inner Gloves'],
+    WicketKeeping: ['Gloves', 'Leg Guard', 'Inner Gloves'],
+    Protection: [
+      'Thigh Pad',
+      'Chest Guard',
+      'Arm Guard',
+      'Abdominal Guard',
+      'Inner ThighPad',
+    ],
+    Bags: ['Kitbags', 'Wheelie', 'Duffle', 'Backpack', 'Bat Cover'],
+    Clothing: [
+      'On-Field',
+      'Base Layer',
+      ' Athletic Supporter',
+      'Socks',
+      'Caps & Hats',
+      'WristBand',
+    ],
+    'Cricket Sets': ['English Willow Kit', 'Kashmir Willow Kit', 'Plastic Kit'],
+    Accessories: [
+      'Ball',
+      'SunGlass',
+      'Bat Grips',
+      'Bat Care',
+      'Stumps',
+      'Other',
+    ],
+  };
+
+  const handleCategoryChange = category => {
+    setSelectedCategory(category);
+    const newSubcategories = subcategoriesMap[category] || [];
+    setSubcategories(newSubcategories);
+
+    // Preserve the selected subcategory if it exists in the new set of subcategories
+    if (newSubcategories.includes(selectedSubcategory)) {
+      setSelectedSubcategory(selectedSubcategory);
+    } else {
+      setSelectedSubcategory(''); // Reset selected subcategory when the category changes
+      setSubSubcategories([]); // Reset subsubcategories when the category changes
+      setSelectedSubSubcategory(''); // Reset selected subsubcategory when the category changes
+    }
+  };
+
+  const handleSubcategoryChange = subcategory => {
+    setSelectedSubcategory(subcategory);
+    if (selectedCategory === 'Gear') {
+      setSubSubcategories(subSubcategoriesMap[subcategory] || []);
+    } else {
+      setSubSubcategories([]); // Reset subsubcategories if the category is not 'Gear'
+    }
+    setSelectedSubSubcategory(''); // Reset selected subsubcategory when the subcategory changes
+  };
+
+  const productId = params.id;
+
+  useEffect(() => {
+    dispatch(getProductDetails(productId));
+  }, [dispatch, productId]);
+
+  useEffect(() => {
+    if (product && product._id !== productId) {
+      dispatch(getProductDetails(productId));
+    } else {
+      const imagesUrl = Array.isArray(product.images)
+        ? product.images.map(img => img.url)
+        : [];
+      setImagePreviews(imagesUrl);
+      setImagePreviews(imagesUrl);
+      setProductName(product.name);
+      setDescription(product.description);
+      setPrice(product.price);
+      setStock(product.stock);
+      setSelectedCategory(product.category);
+      setSelectedSubcategory(product.sub_category);
+      setSelectedSubSubcategory(product.sub_category2);
+      setSize(product.size);
+    }
+
+    if (error) {
+      toast.error(error);
+      dispatch({ type: 'clearErrors' });
+    }
+
+    if (message) {
+      toast.success(message);
+      dispatch({ type: 'clearMessage' });
+    }
+  }, [dispatch, productId, error, product,message]);
+
+  const updateHandler = e => {
+    e.preventDefault(); // Prevent the default form submission behavior
+    const myForm = new FormData();
+    myForm.append('name', name);
+    myForm.append('description', description);
+    myForm.append('price', price);
+    myForm.append('stock', stock);
+    myForm.append('size', size);
+    for (const image of selectedImages) {
+      myForm.append('images', image);
+      console.log(image);
+    }
+    // Append selected category and subcategories
+    myForm.append('category', selectedCategory);
+    myForm.append('sub_category', selectedSubcategory);
+    if (selectedCategory === 'Gear') {
+      myForm.append('sub_category2', selectedSubSubcategory);
+    }
+    dispatch(updateProduct(productId, myForm));
+
+    if (message) {
+      toast.success('doctor Updated Successfully');
+      dispatch({ type: 'clearMessage' });
+    }
+
+    navigate('/products');
+  };
+
+  const verifyData = e => {
+    e.preventDefault();
+    setShowVerificationBox(true);
+  };
+
+  const handleVerificationBoxToggle = () => {
+    setShowVerificationBox(!showVerificationBox);
+  };
+
+  return (
+    <>
+      <MetaData title="Admin--Update Product" />
+      {loading ? (
+        <Loader />
+      ) : (
+        <Grid minH={'100vh'} templateColumns={['1fr', '5fr 1fr']}>
+          <Container py="16">
+            <form onSubmit={updateHandler}>
+              <Heading
+                textTransform={'uppercase'}
+                children="Update Product"
+                my="16"
+                textAlign={['center', 'left']}
+              />
+
+              <VStack m="auto" spacing={'8'}>
+                <div
+                  style={{
+                    overflowX: 'auto', // Add overflow property for horizontal scrolling
+                    maxWidth: '100%', // Adjust as needed
+                  }}
+                >
+                  <HStack spacing={'8'}>
+                    {imagePreviews &&
+                      imagePreviews.map((preview, index) => (
+                        <Image
+                          key={index}
+                          src={preview}
+                          boxSize="64"
+                          objectFit={'contain'}
+                        />
+                      ))}
+                  </HStack>
+                </div>
+                <Input
+                  accept="image/*"
+                  id="chooseAvatar"
+                  type={'file'}
+                  multiple
+                  focusBorderColor="purple.500"
+                  css={{
+                    '&::file-selector-button': {
+                      ...fileUploadCss,
+                      color: 'purple',
+                    },
+                  }}
+                  onChange={changeImageHandler}
+                  // Conditionally set required based on whether there are images or not
+                  required={!imagePreviews || imagePreviews.length === 0}
+                />
+
+                <Input
+                  value={name}
+                  onChange={e => setProductName(e.target.value)}
+                  placeholder="Product Name"
+                  type={'text'}
+                  focusBorderColor="purple.500"
+                />
+                <Input
+                  value={description}
+                  onChange={e => setDescription(e.target.value)}
+                  placeholder="Product Description"
+                  type={'text'}
+                  focusBorderColor="purple.500"
+                />
+                <Input
+                  value={price}
+                  onChange={e => setPrice(e.target.value)}
+                  placeholder="Price"
+                  type={'text'}
+                  focusBorderColor="purple.500"
+                />
+                <Input
+                  value={stock}
+                  onChange={e => setStock(e.target.value)}
+                  placeholder="Stock"
+                  type={'text'}
+                  focusBorderColor="purple.500"
+                />
+
+                <Select
+                  focusBorderColor="purple.500"
+                  value={selectedCategory}
+                  onChange={e => handleCategoryChange(e.target.value)}
+                >
+                  <option value="">Category</option>
+                  {categories.map(item => (
+                    <option key={item} value={item}>
+                      {item}
+                    </option>
+                  ))}
+                </Select>
+
+                <Select
+                  focusBorderColor="purple.500"
+                  value={selectedSubcategory}
+                  onChange={e => handleSubcategoryChange(e.target.value)}
+                  isDisabled={!selectedCategory} // Disable the subcategory select until a category is selected
+                >
+                  <option value="">Subcategory</option>
+                  {subcategories.map(item => (
+                    <option key={item} value={item}>
+                      {item}
+                    </option>
+                  ))}
+                </Select>
+
+                {selectedCategory === 'Gear' && (
+                  <Select
+                    focusBorderColor="purple.500"
+                    value={selectedSubSubcategory}
+                    onChange={e => setSelectedSubSubcategory(e.target.value)}
+                    isDisabled={!selectedSubcategory} // Disable the subsubcategory select until a subcategory is selected
+                  >
+                    <option value="">SubSubcategory</option>
+                    {subSubcategories.map(item => (
+                      <option key={item} value={item}>
+                        {item}
+                      </option>
+                    ))}
+                  </Select>
+                )}
+
+                <Input
+                  value={size}
+                  onChange={e => setSize(e.target.value)}
+                  placeholder="Size/Type"
+                  type={'text'}
+                  focusBorderColor="purple.500"
+                />
+
+                <Button
+                  isLoading={loading}
+                  w="full"
+                  colorScheme={'purple'}
+                  type="submit"
+                >
+                  Update
+                </Button>
+                <Button
+                  w="full"
+                  colorScheme={'yellow'}
+                  type="submit"
+                  onClick={verifyData}
+                >
+                  Verify
+                </Button>
+              </VStack>
+            </form>
+          </Container>
+
+          <Sidebar />
+
+          {showVerificationBox && (
+            <Container
+              position="fixed"
+              top="0"
+              right="0"
+              bottom="0"
+              p="4"
+              bgColor="white"
+              boxShadow="0px 4px 8px rgba(0, 0, 0, 0.1)"
+            >
+              <VStack spacing={4}>
+                <Heading as="h2" size="md">
+                  Verification Details
+                </Heading>
+                <div>
+                  <strong>Product Name:</strong> {name}
+                </div>
+                <div>
+                  <strong>Description:</strong> {description}
+                </div>
+                <div>
+                  <strong>Price:</strong> {price}
+                </div>
+                <div>
+                  <strong>Stock:</strong> {stock}
+                </div>
+                <div>
+                  <strong>Category:</strong> {selectedCategory}
+                </div>
+                <div>
+                  <strong>Subcategory:</strong> {selectedSubcategory}
+                </div>
+                {selectedCategory === 'Gear' && (
+                  <div>
+                    <strong>SubSubcategory:</strong> {selectedSubSubcategory}
+                  </div>
+                )}
+                <div>
+                  <strong>Size/Type:</strong> {size}
+                </div>
+                <Button onClick={handleVerificationBoxToggle}>Close</Button>
+              </VStack>
+            </Container>
+          )}
+        </Grid>
+      )}
+    </>
+  );
+};
+
+export default UpdateProduct;
