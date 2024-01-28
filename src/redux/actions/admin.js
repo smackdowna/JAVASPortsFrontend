@@ -138,7 +138,7 @@ export const getAllDashboard = () => async dispatch => {
   };
   try {
     dispatch({ type: 'allDashboardRequest' });
-    const { data } = await axios.get(`${server}//admin/dashboard`, config);
+    const { data } = await axios.get(`${server}/admin/dashboard`, config);
 
     // Destructure the data object to get the required properties
     const {
