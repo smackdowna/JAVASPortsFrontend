@@ -5,7 +5,7 @@ import { getOrderReducer, orderDeatilsReducer, updateOrderReducer } from './redu
 import { createCouponReducer, deleteCouponReducer, getCouponReducer } from './reducers/couponReducer';
 
 export const server = 'https://java-bc.vercel.app/api/v1';
-
+//http://localhost:7000/api/v1
 
 const store = configureStore({
   reducer: {
