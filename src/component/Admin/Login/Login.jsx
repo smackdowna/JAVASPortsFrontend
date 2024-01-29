@@ -1,21 +1,24 @@
 // Login.jsx
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   Box,
   Button,
   Container,
   FormLabel,
   Heading,
+  Image,
   Input,
   VStack,
 } from '@chakra-ui/react';
 import { useDispatch, useSelector } from 'react-redux';
 import { login } from '../../../redux/actions/userAction';
+import Asset3 from "../../../assets/Asset 3.png";
+import toast from 'react-hot-toast';
 
 const Login = () => {
   const dispatch = useDispatch();
   const [email, setEmail] = useState('');
-  const{loading} = useSelector(state=>state.login)
+  const{loading,error} = useSelector(state=>state.login)
   const [password, setPassword] = useState('');
 
   const submitHandler = e => {
@@ -23,10 +26,20 @@ const Login = () => {
     dispatch(login(email, password));
   };
 
+  useEffect(() => {
+    if (error) {
+      toast.error(error);
+      dispatch({ type: 'clearErrors' });
+    }
+
+   
+  }, [dispatch, error]);
+
   return (
     <>
       <Container h={'95vh'}>
         <VStack h={'full'} justifyContent="center" spacing={'16'}>
+        <Image src={Asset3} height={'58'}/>
           <Heading children={'Welcome To Java Sports'} />
           <form onSubmit={submitHandler}>
             <Box my={'4'}>
