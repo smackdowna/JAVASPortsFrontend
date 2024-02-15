@@ -7,6 +7,7 @@ import {
   Image,
   Input,
   Select,
+  Textarea,
   VStack,
 } from '@chakra-ui/react';
 import React, { useEffect, useState } from 'react';
@@ -35,9 +36,14 @@ const CreateProduct = () => {
 
   const [name, setProductName] = useState('');
   const [description, setDescription] = useState('');
-  const [price, setPrice] = useState('');
+  const [keyFeatures,setKeyFeatures] = useState('');
+  const [specification,setSpecification] = useState('');
+  const [baseprice, setBasePrice] = useState('');
+  const [discountedprice, setDiscountedPrice] = useState('');
   const [stock, setStock] = useState('');
   const [size, setSize] = useState('');
+  const [color, setColor] = useState('');
+  const [Availablecolor, setAvailableColor] = useState('');
   const [selectedImages, setSelectedImages] = useState([]);
   const [imagePreviews, setImagePreviews] = useState([]);
   const [categories] = useState(['Gear', 'Shoes', 'Helmets']);
@@ -142,12 +148,16 @@ const CreateProduct = () => {
     const myForm = new FormData();
     myForm.append('name', name);
     myForm.append('description', description);
-    myForm.append('price', price);
+    myForm.append('keyFeatures', keyFeatures);
+    myForm.append('specification', specification);
+    myForm.append('baseprice', baseprice);
+    myForm.append('discountedprice', discountedprice);
     myForm.append('stock', stock);
     myForm.append('size', size);
+    myForm.append('color', color);
+    myForm.append('Availablecolor', Availablecolor);
     for (const image of selectedImages) {
       myForm.append('images', image);
-      console.log(image)
     }
     // Append selected category and subcategories
     myForm.append('category', selectedCategory);
@@ -237,17 +247,35 @@ const CreateProduct = () => {
                 type={'text'}
                 focusBorderColor="purple.500"
               />
-              <Input
+              <Textarea
                 value={description}
-                onChange={e => setDescription(e.target.value)}
+                onChange={(e) => setDescription(e.target.value)}
                 placeholder="Product Description"
+                focusBorderColor="purple.500"
+              />
+              <Textarea
+                value={keyFeatures}
+                onChange={(e) => setKeyFeatures(e.target.value)}
+                placeholder="Product Key Features"
+                focusBorderColor="purple.500"
+              />
+              <Textarea
+                value={specification}
+                onChange={(e) => setSpecification(e.target.value)}
+                placeholder="Product Specification"
+                focusBorderColor="purple.500"
+              />
+              <Input
+                value={baseprice}
+                onChange={e => setBasePrice(e.target.value)}
+                placeholder="Base Price"
                 type={'text'}
                 focusBorderColor="purple.500"
               />
               <Input
-                value={price}
-                onChange={e => setPrice(e.target.value)}
-                placeholder="Price"
+                value={discountedprice}
+                onChange={e => setDiscountedPrice(e.target.value)}
+                placeholder="Discounted Price"
                 type={'text'}
                 focusBorderColor="purple.500"
               />
@@ -309,6 +337,20 @@ const CreateProduct = () => {
                 type={'text'}
                 focusBorderColor="purple.500"
               />
+              <Input
+                value={color}
+                onChange={e => setColor(e.target.value)}
+                placeholder="Color"
+                type={'text'}
+                focusBorderColor="purple.500"
+              />
+              <Input
+                value={Availablecolor}
+                onChange={e => setAvailableColor(e.target.value)}
+                placeholder="Available Color"
+                type={'text'}
+                focusBorderColor="purple.500"
+              />
 
               <Button w="full" isLoading={loading} colorScheme={'purple'} type="submit">
                 Create
@@ -343,8 +385,11 @@ const CreateProduct = () => {
                 <strong>Description:</strong> {description}
               </div>
               <div>
-                <strong>Price:</strong> {price}
-              </div>
+                <strong>Base Price:</strong> {baseprice}
+              </div> 
+              <div>
+                <strong>Discounted Price:</strong> {discountedprice}
+              </div> 
               <div>
                 <strong>Stock:</strong> {stock}
               </div>
@@ -361,6 +406,12 @@ const CreateProduct = () => {
               )}
               <div>
                 <strong>Size/Type:</strong> {size}
+              </div>
+              <div>
+                <strong>Color:</strong> {color}
+              </div>
+              <div>
+                <strong>Available Color:</strong> {Availablecolor}
               </div>
               <Button onClick={handleVerificationBoxToggle}>Close</Button>
             </VStack>

@@ -115,7 +115,7 @@ const Products = () => {
                       <Th>Name</Th>
                       <Th>Image</Th>
                       <Th>Category</Th>
-                      <Th>Price</Th>
+                      <Th>Discount Price</Th>
                       <Th>Stock</Th>
                       <Th isNumeric>Action</Th>
                     </Tr>
@@ -153,7 +153,7 @@ function Row({ item, deleteHandler, loading }) {
         <Image src={item.images[0].url} />
       </Td>
       <Td>{item.category}</Td>
-      <Td>{item.price}</Td>
+      <Td>{item.discountedprice}</Td>
       <Td>{item.stock}</Td>
       <Td isNumeric>
         <HStack justifyContent={'flex-end'}>
