@@ -61,6 +61,9 @@ const Orders = () => {
     XLSX.utils.book_append_sheet(wb, ws, 'Orders_Data');
     XLSX.writeFile(wb, 'order_data.xlsx');
   };
+  useEffect(() => {
+    dispatch(getAllOrders());
+  }, [dispatch]);
 
   return (
     <>
