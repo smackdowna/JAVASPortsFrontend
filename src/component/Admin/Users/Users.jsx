@@ -71,7 +71,7 @@ const Users = () => {
                     <Th>Name</Th>
                     <Th>Email</Th>
                     <Th>MobileNo</Th>
-                    <Th>Gender</Th>
+                    <Th>DOB</Th>
                   </Tr>
                 </Thead>
 
@@ -100,7 +100,7 @@ function Row({ item }) {
       <Td>{item.full_name}</Td>
       <Td>{item.email}</Td>
       <Td>{item.phoneNo}</Td>
-      <Td>{item.gender}</Td>
+      <Td>{item.dob}</Td>
     </Tr>
   );
 }
