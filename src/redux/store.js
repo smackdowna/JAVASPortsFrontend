@@ -4,7 +4,7 @@ import {  ProductReducer, deleteProductReducer, getDashboardReducer, getProductR
 import { getOrderReducer, orderDeatilsReducer, updateOrderReducer } from './reducers/orderReducer';
 import { createCouponReducer, deleteCouponReducer, getCouponReducer } from './reducers/couponReducer';
 
-export const server = 'https://java-bc.vercel.app/api/v1';
+export const server = 'https://javabc.vercel.app/api/v1';
 //http://localhost:7000/api/v1
 //https://java-bc.vercel.app/api/v1
 
