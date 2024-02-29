@@ -35,10 +35,10 @@ export const getAllProducts = () => async dispatch => {
   };
   try {
     dispatch({ type: 'allProductRequest' });
-    const { data } = await axios.get(`${server}/products`, config);
+    const { data } = await axios.get(`${server}/admin/product`, config);
 
     // Destructure the data object to get the required properties
-    const { products, productsCount, resultPerPage, filteredProductsCount } =
+    const { products, productsCount } =
       data;
 
     // Dispatch the relevant data to the Redux store
@@ -46,9 +46,7 @@ export const getAllProducts = () => async dispatch => {
       type: 'allProductSuccess',
       payload: {
         products,
-        productsCount,
-        resultPerPage,
-        filteredProductsCount,
+        productsCount
       },
     });
   } catch (error) {
@@ -176,7 +174,7 @@ export const getAllDashboard = () => async dispatch => {
       });
     } else {
       dispatch({
-        type: 'allDoctorFail',
+        type: 'allDashboardFail',
         payload: 'An unexpected error occurred.',
       });
     }
