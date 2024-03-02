@@ -97,7 +97,7 @@ const CreateProduct = () => {
   const subSubcategoriesMap = {
     Bat: ['English Willow', 'Kashmir Willow', 'Tennis', 'Player Edition'],
     'Batting Gear': ['Gloves', 'Leg Guard', 'Inner Gloves'],
-    WicketKeeping: ['Gloves', 'Leg Guard', 'Inner Gloves'],
+    WicketKeeping: ['WGloves', 'WLeg Guard', 'WInner Gloves'],
     Protection: [
       'Thigh Pad',
       'Chest Guard',
