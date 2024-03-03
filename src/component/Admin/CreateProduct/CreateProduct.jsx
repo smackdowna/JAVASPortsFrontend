@@ -109,7 +109,7 @@ const CreateProduct = () => {
     Clothing: [
       'On-Field',
       'Base Layer',
-      ' Athletic Supporter',
+      'Athletic Supporter',
       'Socks',
       'Caps & Hats',
       'WristBand',
