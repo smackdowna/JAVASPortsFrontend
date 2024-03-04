@@ -6,7 +6,8 @@ import { createCouponReducer, deleteCouponReducer, getCouponReducer } from './re
 
 export const server = 'https://javabc.vercel.app/api/v1';
 //http://localhost:7000/api/v1
-//https://java-bc.vercel.app/api/v1
+//'https://javabc.vercel.app/api/v1'
+
 
 const store = configureStore({
   reducer: {

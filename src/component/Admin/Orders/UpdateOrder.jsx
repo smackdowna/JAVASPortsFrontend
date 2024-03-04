@@ -174,6 +174,9 @@ const OrderDetails = () => {
                       </Text>
                       {order && order.shippingInfo && (
                         <>
+                        <Text fontWeight="bold" fontSize="md" mb="1">
+                            Landmark: {order.shippingInfo.landmark}
+                          </Text>
                           <Text fontWeight="bold" fontSize="md" mb="1">
                             Address: {order.shippingInfo.address}
                           </Text>
@@ -189,18 +192,15 @@ const OrderDetails = () => {
                           <Text fontWeight="bold" fontSize="md" mb="1">
                             PinCode: {order.shippingInfo.pinCode}
                           </Text>
+                          <Text fontWeight="bold" fontSize="md" mb="1">
+                            PhoneNo: {order.shippingInfo.phoneNo}
+                          </Text>
                         </>
                       )}
                       {order && (
                         <>
                           <Text fontWeight="bold" fontSize="md" mb="1">
                             Items Price: ₹{order.itemsPrice}
-                          </Text>
-                          <Text fontWeight="bold" fontSize="md" mb="1">
-                            Tax Price: ₹{order.taxPrice}
-                          </Text>
-                          <Text fontWeight="bold" fontSize="md" mb="1">
-                            Shipping Price: ₹{order.shippingPrice}
                           </Text>
                           <Text fontWeight="bold" fontSize="md" mb="1">
                             Total Price: ₹{order.totalPrice}
